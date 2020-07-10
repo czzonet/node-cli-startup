@@ -1,0 +1,38 @@
+{
+  "name": "node-cli-startup",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "files": [
+    "dist/"
+  ],
+  "author": "czzonet <czzonet@163.com>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/czzonet/node-cli-startup.git"
+  },
+  "keywords": [
+    "node-cli-startup",
+    "npm",
+    "typescript"
+  ],
+  "bugs": {
+    "url": "https://github.com/czzonet/node-cli-startup/issues"
+  },
+  "homepage": "https://github.com/czzonet/node-cli-startup#readme",
+  "scripts": {
+    "run": "tsc && node ./dist/index.js",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.3",
+    "@babel/preset-env": "^7.10.3",
+    "@babel/preset-typescript": "^7.10.1",
+    "@types/jest": "^26.0.3",
+    "babel-jest": "^26.1.0",
+    "jest": "^26.1.0"
+  },
+  "dependencies": {
+    "commander": "^5.1.0"
+  }
+}
