@@ -4,6 +4,7 @@ export { sum } from "./lib/sum";
 import { program } from "commander";
 import * as fs from "fs";
 import * as path from "path";
+import download from "download-git-repo";
 
 /**
  * 异步主函数
@@ -35,6 +36,14 @@ async function main() {
     .description("create dir if not exist")
     .action(function (dir, options) {
       mkdirIfNotExist(dir);
+    });
+
+  /** 命令：下载github仓库模板 */
+  program
+    .command("download <repo>")
+    .description("download github repository to temp")
+    .action(function (repo, options) {
+      downloadRepository(repo).then();
     });
 
   /** 额外的帮助信息 */
@@ -80,4 +89,24 @@ function mkdirIfNotExist(dir: string) {
   fs.existsSync(targetPath)
     ? console.log("Warning: " + dir + " already exist,ignore")
     : (fs.mkdirSync(targetPath), console.log("Create dir: " + dir));
+}
+
+async function downloadRepository(repo: string) {
+  const downloadAsync = new Promise((resolve, reject) =>
+    download(repo, "./.tmp", function (err: any) {
+      // console.log("err: ", err);
+      err ? reject() : resolve();
+    })
+  );
+
+  console.log("Start downloading ", repo);
+  try {
+    /** 新建临时文件夹 */
+    mkdirIfNotExist(".tmp");
+    /** 下载 */
+    await downloadAsync;
+    console.log("Download completed.");
+  } catch (error) {
+    console.log("Error: ", error);
+  }
 }
