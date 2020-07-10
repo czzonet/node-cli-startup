@@ -2,6 +2,8 @@
 
 export { sum } from "./lib/sum";
 import { program } from "commander";
+import * as fs from "fs";
+import * as path from "path";
 
 /**
  * 异步主函数
@@ -17,7 +19,7 @@ async function main() {
     .option("-d --debug", "output extra debug information")
     .option("-p --pizza-type <type>", "flavour of pizza");
 
-  /** 命令 */
+  /** 命令：等待并打印 */
   program
     .command("waitlog <logstr>")
     .description("wait time(ms) and log input string")
@@ -25,6 +27,14 @@ async function main() {
     .action(function (logstr, cmdObj) {
       /** 子参数选项会由该回调参数对象cmdObj的属性传入 */
       waitLog(logstr, cmdObj.timeMs).then();
+    });
+
+  /** 命令：创建文件夹 */
+  program
+    .command("mkdir <dir>")
+    .description("create dir if not exist")
+    .action(function (dir, options) {
+      mkdirIfNotExist(dir);
     });
 
   /** 额外的帮助信息 */
@@ -60,4 +70,14 @@ async function waitLog(logstr: string, timeMs?: number) {
   await timeAsync;
   console.log(logstr);
   console.log("wait end");
+}
+
+function mkdirIfNotExist(dir: string) {
+  const targetPath = path.resolve(process.cwd(), dir);
+  // console.log("targetPath", targetPath);
+
+  /** 路径存在并且是文件夹 */
+  fs.existsSync(targetPath)
+    ? console.log("Warning: " + dir + " already exist,ignore")
+    : (fs.mkdirSync(targetPath), console.log("Create dir: " + dir));
 }
