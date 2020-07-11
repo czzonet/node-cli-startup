@@ -5,6 +5,8 @@ import { program } from "commander";
 import * as fs from "fs";
 import * as path from "path";
 import download from "download-git-repo";
+import * as util from "util";
+import { exec } from "child_process";
 
 /**
  * 异步主函数
@@ -44,6 +46,14 @@ async function main() {
     .description("download github repository to temp")
     .action(function (repo, options) {
       downloadRepository(repo).then();
+    });
+
+  /** 命令：复制处理文件夹 */
+  program
+    .command("changedir <dir>")
+    .description("copy dir and do something")
+    .action(function (dir, options) {
+      changeDir(dir);
     });
 
   /** 额外的帮助信息 */
@@ -109,4 +119,28 @@ async function downloadRepository(repo: string) {
   } catch (error) {
     console.log("Error: ", error);
   }
+}
+
+/** 复制和处理文件夹 */
+function changeDir(dir: string) {
+  const execPromisify = util.promisify(exec);
+  const CWD = path.resolve(process.cwd());
+
+  /** 注意目标目录存在就会到子目录里 */
+  const cpDir = async () => execPromisify(`mv ./.tmp ./${dir}`, { cwd: CWD });
+  const rmDir = async () =>
+    execPromisify(`rm -rf ./${dir}/.git `, { cwd: CWD });
+
+  const handle = async () => {
+    await cpDir();
+    // await rmDir();
+  };
+
+  handle()
+    .then((d) => {
+      console.log("ok: ");
+    })
+    .catch((error) => {
+      console.log("error: ", error);
+    });
 }
