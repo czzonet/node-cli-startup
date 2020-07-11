@@ -56,6 +56,14 @@ async function main() {
       changeDir(dir);
     });
 
+  /** 命令：创建项目 */
+  program
+    .command("create <dir>")
+    .description("clone and create app")
+    .action(function (dir, options) {
+      createApp(dir).then();
+    });
+
   /** 额外的帮助信息 */
   program.on("--help", () => {
     console.log("");
@@ -138,9 +146,14 @@ function changeDir(dir: string) {
 
   handle()
     .then((d) => {
-      console.log("ok: ");
+      console.log("Change dir ok");
     })
     .catch((error) => {
       console.log("error: ", error);
     });
+}
+/** 下载模板创建项目 */
+async function createApp(dir: string) {
+  await downloadRepository("czzonet/vue-template");
+  changeDir(dir);
 }
